@@ -19,6 +19,8 @@ spec:
       key: password
   http:
     tlsSecret: keycloak-tls-secret
+  hostname:
+    hostname: keycloak-keycloak.apps-crc.testing
   unsupported:
     podTemplate:
       spec:
