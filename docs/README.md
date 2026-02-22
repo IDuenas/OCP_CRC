@@ -27,7 +27,16 @@ Before deploying the stack, ensure the following are installed and configured:
 
 ## Setup Instructions
 
-### 1. Bootstrap the Cluster
+### 1. Configure the Stack (Optional Turn-Key Setup)
+To customize parameters like the Keycloak admin credentials or automatically download/configure OpenShift Local constraints (CPU, RAM, Disk):
+
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+*Note: This script will dynamically template the GitOps Secrets and values based on your input.*
+
+### 2. Bootstrap the Cluster
 
 A bootstrap script has been provided to initialize the GitOps flow.
 
