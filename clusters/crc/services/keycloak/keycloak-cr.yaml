@@ -13,14 +13,24 @@ spec:
     host: postgres.postgres.svc
     usernameSecret:
       name: keycloak-db-secret
-      key: username
+      key: POSTGRES_USER
     passwordSecret:
       name: keycloak-db-secret
-      key: password
+      key: POSTGRES_PASSWORD
   http:
     tlsSecret: keycloak-tls-secret
   hostname:
     hostname: keycloak-keycloak.apps-crc.testing
+  # Bootstrap the initial admin credentials dynamically
+  bootstrapAdminSpec:
+    user:
+      secret:
+        name: keycloak-initial-admin
+        key: admin-username
+    password:
+      secret:
+        name: keycloak-initial-admin
+        key: admin-password
   unsupported:
     podTemplate:
       spec:

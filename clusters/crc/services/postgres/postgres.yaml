@@ -67,14 +67,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: keycloak-db-secret
-                  key: username
+                  key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: keycloak-db-secret
-                  key: password
+                  key: POSTGRES_PASSWORD
             - name: POSTGRES_DB
-              value: keycloak
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-db-secret
+                  key: POSTGRES_DB
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
           ports:
