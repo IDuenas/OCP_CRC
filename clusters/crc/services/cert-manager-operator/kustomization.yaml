@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
   - operator.yaml
   - clusterissuers.yaml
-namespace: cert-manager-operator
