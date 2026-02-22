@@ -2,6 +2,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - operator.yaml
-  - keycloak-cr.yaml
-  - certificate.yaml
-namespace: keycloak
+  - clusterissuers.yaml
+namespace: cert-manager-operator
