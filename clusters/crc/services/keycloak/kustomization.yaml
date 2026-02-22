@@ -5,3 +5,5 @@ resources:
   - keycloak-cr.yaml
   - certificate.yaml
 namespace: keycloak
+  - db-secret.yaml
+  - admin-secret.yaml

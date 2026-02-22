@@ -66,7 +66,7 @@ echo ""
 echo -e "${YELLOW}Phase 2: Dynamic GitOps Configuration${NC}"
 
 # Read existing values or default to pre-filled template
-K_USER="iduenas"
+K_USER="user01"
 K_PASS="cluster#01"
 K_DOMAIN="apps-crc.testing"
 
@@ -103,6 +103,27 @@ stringData:
   POSTGRES_USER: keycloak
   POSTGRES_PASSWORD: ${K_PASS}
 EOF
+
+# Provide a copy for the Keycloak CR itself to mount (cross-namespace secrets are not permitted)
+cat <<EOF > clusters/crc/services/keycloak/db-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-db-secret
+  namespace: keycloak
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+type: Opaque
+stringData:
+  POSTGRES_DB: keycloak
+  POSTGRES_USER: keycloak
+  POSTGRES_PASSWORD: ${K_PASS}
+EOF
+
+# Ensure the db-secret is added to the keycloak kustomization
+if ! grep -q "db-secret.yaml" clusters/crc/services/keycloak/kustomization.yaml; then
+  echo "  - db-secret.yaml" >> clusters/crc/services/keycloak/kustomization.yaml
+fi
 
 # Use sed/awk equivalents to safely replace username/pw in gitops config if needed 
 # Instead, we will generate the keycloak initial admin secret dynamically.
