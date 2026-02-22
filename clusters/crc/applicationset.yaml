@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: dev-stack-generator
+  namespace: openshift-gitops
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/IDuenas/OCP_CRC.git'
+        revision: HEAD
+        directories:
+          - path: clusters/crc/services/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/IDuenas/OCP_CRC.git'
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: '{{path.basename}}'
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true

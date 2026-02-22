@@ -1,0 +1,42 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+  namespace: keycloak
+  # Ensure the CR waits for the operator to be installed
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  instances: 1
+  db:
+    vendor: postgres
+    host: postgres.postgres.svc
+    usernameSecret:
+      name: keycloak-db-secret
+      key: username
+    passwordSecret:
+      name: keycloak-db-secret
+      key: password
+  http:
+    tlsSecret: keycloak-tls-secret
+  unsupported:
+    podTemplate:
+      spec:
+        containers:
+          - resources:
+              requests:
+                cpu: 500m
+                memory: 2Gi
+              limits:
+                cpu: "2"
+                memory: 4Gi
+            env:
+              - name: JAVA_OPTS_APPEND
+                value: "-Xms2G -Xmx2G"
+        tolerations:
+          - key: "node.kubernetes.io/disk-pressure"
+            operator: "Exists"
+            effect: "NoSchedule"
+          - key: "node-role.kubernetes.io/master"
+            operator: "Exists"
+            effect: "NoSchedule"

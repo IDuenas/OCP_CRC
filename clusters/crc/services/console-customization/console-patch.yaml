@@ -1,0 +1,12 @@
+---
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: keycloak-dashboard
+spec:
+  location: ApplicationMenu
+  applicationMenu:
+    section: Developer Tools
+  text: Keycloak Authentication
+  # URL will be the actual route of the Keycloak instance. For CRC, we can use the default pattern or wait for the route to be created.
+  href: 'https://keycloak-keycloak.apps-crc.testing'
