@@ -135,8 +135,8 @@ metadata:
   namespace: keycloak
 type: Opaque
 stringData:
-  admin-username: ${K_USER}
-  admin-password: ${K_PASS}
+  username: ${K_USER}
+  password: ${K_PASS}
 EOF
 
 # Ensure the admin-secret is added to the keycloak kustomization

@@ -22,15 +22,9 @@ spec:
   hostname:
     hostname: keycloak-keycloak.apps-crc.testing
   # Bootstrap the initial admin credentials dynamically
-  bootstrapAdminSpec:
+  bootstrapAdmin:
     user:
-      secret:
-        name: custom-keycloak-admin-secret
-        key: admin-username
-    password:
-      secret:
-        name: custom-keycloak-admin-secret
-        key: admin-password
+      secret: custom-keycloak-admin-secret
   unsupported:
     podTemplate:
       spec:
