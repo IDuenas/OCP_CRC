@@ -25,11 +25,11 @@ spec:
   bootstrapAdminSpec:
     user:
       secret:
-        name: keycloak-initial-admin
+        name: custom-keycloak-admin-secret
         key: admin-username
     password:
       secret:
-        name: keycloak-initial-admin
+        name: custom-keycloak-admin-secret
         key: admin-password
   unsupported:
     podTemplate:

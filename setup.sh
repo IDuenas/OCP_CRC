@@ -131,7 +131,7 @@ cat <<EOF > clusters/crc/services/keycloak/admin-secret.yaml
 apiVersion: v1
 kind: Secret
 metadata:
-  name: keycloak-initial-admin
+  name: custom-keycloak-admin-secret
   namespace: keycloak
   annotations:
     argocd.argoproj.io/sync-wave: "1"
