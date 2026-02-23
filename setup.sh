@@ -133,8 +133,6 @@ kind: Secret
 metadata:
   name: custom-keycloak-admin-secret
   namespace: keycloak
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 type: Opaque
 stringData:
   admin-username: ${K_USER}
