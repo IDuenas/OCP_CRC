@@ -19,6 +19,8 @@ spec:
         repoURL: 'https://github.com/IDuenas/OCP_CRC_Private.git'
         targetRevision: HEAD
         path: '{{path}}'
+        kustomize:
+          buildOptions: --enable-helm
       destination:
         server: 'https://kubernetes.default.svc'
         namespace: '{{path.basename}}'

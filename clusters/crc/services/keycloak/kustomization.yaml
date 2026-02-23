@@ -8,4 +8,3 @@ resources:
   - admin-secret-sealed.yaml
   - db-secret-sealed.yaml
   - realm-secrets-sealed.yaml
-  - realm-import.yaml
