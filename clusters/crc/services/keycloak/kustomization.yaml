@@ -5,6 +5,6 @@ resources:
   - operator.yaml
   - keycloak-cr.yaml
   - certificate.yaml
-  - admin-secret-sealed.yaml
-  - db-secret-sealed.yaml
-  - realm-secrets-sealed.yaml
+#  - admin-secret-sealed.yaml
+#  - db-secret-sealed.yaml
+#  - realm-secrets-sealed.yaml
