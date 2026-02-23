@@ -12,3 +12,4 @@ clusters/crc/services/postgres/secret.yaml
 
 # Generated values file (contains admin username)
 values-template.yaml
+master.key

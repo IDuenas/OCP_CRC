@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kube-system
+
+resources:
+  - scc-rolebindings.yaml
+
+helmCharts:
+  - name: sealed-secrets
+    repo: https://bitnami-labs.github.io/sealed-secrets
+    releaseName: sealed-secrets
+    version: 2.18.1
+    includeCRDs: true
+    valuesInline:
+      securityContext:
+        runAsUser: null
+        fsGroup: null
+      podSecurityContext:
+        runAsUser: null
