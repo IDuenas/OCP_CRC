@@ -164,12 +164,21 @@ spec:
     id: openshift
     realm: openshift
     enabled: true
+    loginWithEmailAllowed: false
     users:
       - username: ${K_USER}
         enabled: true
+        emailVerified: true
+        firstName: ${K_USER}
+        lastName: Admin
+        email: ${K_USER}@conflux.local
+        requiredActions: []
         credentials:
           - type: password
             value: "${K_PASS}"
+            temporary: false
+        realmRoles:
+          - default-roles-openshift
     clients:
       - clientId: openshift
         secret: ${OIDC_SECRET}
