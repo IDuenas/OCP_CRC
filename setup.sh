@@ -65,8 +65,7 @@ echo ""
 # -------------------------------------------------------------------------
 echo -e "${YELLOW}Phase 2: Dynamic GitOps Configuration${NC}"
 
-# Read existing values or default to pre-filled template
-K_USER="user01"
+K_USER="iduenas"
 K_PASS="cluster#01"
 K_DOMAIN="apps-crc.testing"
 
@@ -145,6 +144,107 @@ if ! grep -q "admin-secret.yaml" clusters/crc/services/keycloak/kustomization.ya
 fi
 
 echo -e "${GREEN}[✓] Secrets successfully templated!${NC}"
+echo ""
+
+echo -e "${YELLOW}Phase 2.5: OpenShift Identity Provider Integration${NC}"
+
+# Generate a secure OAuth client secret
+OIDC_SECRET=$(openssl rand -hex 16)
+
+# Generate the Keycloak Realm Import YAML
+cat <<EOF > clusters/crc/services/keycloak/realm-import.yaml
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: KeycloakRealmImport
+metadata:
+  name: openshift-realm
+  namespace: keycloak
+spec:
+  keycloakCRName: keycloak
+  realm:
+    id: openshift
+    realm: openshift
+    enabled: true
+    users:
+      - username: ${K_USER}
+        enabled: true
+        credentials:
+          - type: password
+            value: "${K_PASS}"
+    clients:
+      - clientId: openshift
+        secret: ${OIDC_SECRET}
+        enabled: true
+        protocol: openid-connect
+        standardFlowEnabled: true
+        implicitFlowEnabled: false
+        directAccessGrantsEnabled: true
+        redirectUris:
+          - "https://oauth-openshift.apps-crc.testing/*"
+          - "https://console-openshift-console.apps-crc.testing/*"
+EOF
+
+# Ensure realm-import is added to keycloak kustomization
+if ! grep -q "realm-import.yaml" clusters/crc/services/keycloak/kustomization.yaml; then
+  echo "  - realm-import.yaml" >> clusters/crc/services/keycloak/kustomization.yaml
+fi
+
+# Prepare OpenShift-Config OIDC Secret for OpenShift OAuth
+mkdir -p clusters/crc/services/openshift-config
+cat <<EOF > clusters/crc/services/openshift-config/oidc-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-oidc-secret
+  namespace: openshift-config
+type: Opaque
+stringData:
+  clientSecret: ${OIDC_SECRET}
+EOF
+
+# Create OpenShift ClusterRoleBinding for the created user
+cat <<EOF > clusters/crc/services/openshift-config/cluster-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: keycloak-cluster-admin-${K_USER}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: User
+    name: ${K_USER}
+EOF
+
+# Provide OpenShift OAuth with the trusted CA for Keycloak
+if [ "${K_TLS}" == "local-ca" ]; then
+  if [ -f "local-ca.crt" ]; then
+    CA_CONTENT=$(cat local-ca.crt | sed 's/^/    /')
+    cat <<EOF > clusters/crc/services/openshift-config/oidc-ca.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-oidc-ca
+  namespace: openshift-config
+data:
+  ca.crt: |
+${CA_CONTENT}
+EOF
+  else
+    echo -e "\${YELLOW}[!] local-ca.crt not found, skipping CA map for OIDC.\${NC}"
+  fi
+else
+    echo -e "\${YELLOW}[!] Custom TLS: Defaulting to an empty CA map.\${NC}"
+    cat <<EOF > clusters/crc/services/openshift-config/oidc-ca.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-oidc-ca
+  namespace: openshift-config
+EOF
+fi
+
+echo -e "${GREEN}[✓] OpenShift Single Sign-On templated!${NC}"
 echo ""
 
 # -------------------------------------------------------------------------
