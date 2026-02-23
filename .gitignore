@@ -1,1 +1,14 @@
 local-ca.crt
+
+# Generated secrets — never commit these
+# These are created by setup.sh and must remain local only
+clusters/crc/services/keycloak/admin-secret.yaml
+clusters/crc/services/keycloak/db-secret.yaml
+clusters/crc/services/keycloak/realm-import.yaml
+clusters/crc/services/openshift-config/oidc-secret.yaml
+clusters/crc/services/openshift-config/oidc-ca.yaml
+clusters/crc/services/openshift-config/cluster-role-binding.yaml
+clusters/crc/services/postgres/secret.yaml
+
+# Generated values file (contains admin username)
+values-template.yaml

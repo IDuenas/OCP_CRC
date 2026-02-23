@@ -65,8 +65,8 @@ echo ""
 # -------------------------------------------------------------------------
 echo -e "${YELLOW}Phase 2: Dynamic GitOps Configuration${NC}"
 
-K_USER="iduenas"
-K_PASS="cluster#01"
+K_USER=""
+K_PASS=""
 K_DOMAIN="apps-crc.testing"
 
 # Due to CRC limitations, the domain is hardcoded to .testing. 
@@ -74,12 +74,16 @@ echo -e "${YELLOW}Note: OpenShift Local (CRC) strictly enforces the base domain 
 echo -e "${YELLOW}This wizard will configure the stack against this static routing.${NC}"
 echo ""
 
-read -p "Enter Keycloak Initial Admin Username [$K_USER]: " input_user
-K_USER=${input_user:-$K_USER}
+while [[ -z "$K_USER" ]]; do
+  read -p "Enter Keycloak Initial Admin Username: " input_user
+  K_USER=${input_user}
+done
 
-read -p "Enter Keycloak Initial Admin Password [$K_PASS]: " -s input_pass
-echo ""
-K_PASS=${input_pass:-$K_PASS}
+while [[ -z "$K_PASS" ]]; do
+  read -p "Enter Keycloak Initial Admin Password: " -s input_pass
+  echo ""
+  K_PASS=${input_pass}
+done
 
 read -p "Specify TLS Strategy ('local-ca' or 'custom') [local-ca]: " input_tls
 K_TLS=${input_tls:-"local-ca"}
@@ -169,7 +173,7 @@ spec:
       - username: ${K_USER}
         enabled: true
         emailVerified: true
-        firstName: ${K_USER}
+        firstName: Admin
         lastName: Admin
         email: ${K_USER}@conflux.local
         requiredActions: []
@@ -279,7 +283,9 @@ echo -e "${GREEN}  Setup Complete!                                ${NC}"
 echo -e "${GREEN}================================================${NC}"
 echo ""
 echo "Next Steps:"
-echo "1. Commit these unstaged changes: git add . && git commit -m 'chore: run setup wizard'"
+echo "1. Stage ONLY non-secret tracked changes:"
+echo "     git add -u && git commit -m 'chore: run setup wizard'"
+echo "   ⚠  Do NOT run 'git add .' — secret files are .gitignored and must stay local."
 echo "2. Push to your Git Repository: git push origin main"
 echo "3. Run your bootstrap script: ./bootstrap.sh"
 echo ""
