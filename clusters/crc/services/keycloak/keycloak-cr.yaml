@@ -39,6 +39,16 @@ spec:
             env:
               - name: JAVA_OPTS_APPEND
                 value: "-Xms2G -Xmx2G"
+              - name: REALM_USER_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: keycloak-realm-secrets
+                    key: REALM_USER_PASSWORD
+              - name: REALM_OIDC_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: keycloak-realm-secrets
+                    key: REALM_OIDC_CLIENT_SECRET
         tolerations:
           - key: "node.kubernetes.io/disk-pressure"
             operator: "Exists"

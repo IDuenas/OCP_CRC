@@ -6,7 +6,7 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: 'https://github.com/IDuenas/OCP_CRC.git'
+        repoURL: 'https://github.com/IDuenas/OCP_CRC_Private.git'
         revision: HEAD
         directories:
           - path: clusters/crc/services/*
@@ -16,7 +16,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: 'https://github.com/IDuenas/OCP_CRC.git'
+        repoURL: 'https://github.com/IDuenas/OCP_CRC_Private.git'
         targetRevision: HEAD
         path: '{{path}}'
       destination:
